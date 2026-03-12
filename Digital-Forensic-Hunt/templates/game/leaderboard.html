@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SYS://TRACE — LEADERBOARD</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/leaderboard.css' %}"/>
+</head>
+<body>
+  <div id="lb-bg"><div class="scanlines"></div></div>
+
+  <header class="lb-header">
+    <a href="{% url 'game' %}" class="lb-back">← BACK TO TERMINAL</a>
+    <div class="lb-title">⌬ SYS://TRACE — NEXUS LEADERBOARD</div>
+    <div class="lb-user">OPERATIVE: {{ request.user.profile.operative_name|default:"GUEST" }}</div>
+  </header>
+
+  <!-- Stats Bar -->
+  <div class="lb-stats">
+    <div class="stat-card"><div class="stat-val">{{ stats.total_players }}</div><div class="stat-lbl">OPERATIVES</div></div>
+    <div class="stat-card"><div class="stat-val">{{ stats.total_games }}</div><div class="stat-lbl">GAMES COMPLETED</div></div>
+    <div class="stat-card"><div class="stat-val">{{ stats.avg_score }}</div><div class="stat-lbl">AVG SCORE</div></div>
+    <div class="stat-card"><div class="stat-val">{{ stats.top_score }}</div><div class="stat-lbl">TOP SCORE</div></div>
+  </div>
+
+  <!-- Top 3 Podium -->
+  {% if top3 %}
+  <div class="podium">
+    {% for e in top3 %}
+    <div class="podium-card rank-{{ forloop.counter }} {% if request.user.is_authenticated and e.player.operative_name == request.user.profile.operative_name %}is-me{% endif %}">
+      <div class="podium-medal">{% if forloop.counter == 1 %}🥇{% elif forloop.counter == 2 %}🥈{% else %}🥉{% endif %}</div>
+      <div class="podium-name">{{ e.player.operative_name }}</div>
+      <div class="podium-score">{{ e.score }}</div>
+      <div class="podium-meta">{{ e.missions_completed }} missions · {{ e.integrity }}% integrity</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Full Table -->
+  <div class="lb-table-wrap">
+    <table class="lb-table">
+      <thead>
+        <tr>
+          <th>#</th><th>OPERATIVE</th><th>SCORE</th><th>MISSIONS</th>
+          <th>INTEGRITY</th><th>TIME</th><th>RANK</th><th>DATE</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in top3 %}
+        {% with rank=forloop.counter %}
+        <tr class="{% if request.user.is_authenticated and e.player.operative_name == request.user.profile.operative_name %}highlight{% endif %}">
+          <td class="rank-cell">
+            {% if rank == 1 %}🥇{% elif rank == 2 %}🥈{% elif rank == 3 %}🥉{% else %}{{ rank }}{% endif %}
+          </td>
+          <td class="name-cell">{{ e.player.operative_name }}</td>
+          <td class="score-cell">{{ e.score }}</td>
+          <td>{{ e.missions_completed }}/15</td>
+          <td>
+            <div class="int-bar"><div class="int-fill" style="width:{{ e.integrity }}%"></div></div>
+            {{ e.integrity }}%
+          </td>
+          <td>
+            {% with m=e.time_taken|divisibleby:60 %}
+            {{ e.time_taken|floatformat:0 }}s
+            {% endwith %}
+          </td>
+          <td class="rank-badge-cell">
+            {% if e.score >= 5000 %}<span class="rank-sovereign">SOVEREIGN</span>
+            {% elif e.score >= 3000 %}<span class="rank-elite">ELITE</span>
+            {% elif e.score >= 1500 %}<span class="rank-spec">SPECIALIST</span>
+            {% elif e.score >= 500 %}<span class="rank-agent">AGENT</span>
+            {% else %}<span class="rank-rookie">ROOKIE</span>{% endif %}
+          </td>
+          <td>{{ e.achieved_at|date:"Y-m-d" }}</td>
+        </tr>
+        {% endwith %}
+        {% endfor %}
+        {% for e in rest %}
+        {% with rank=forloop.counter|add:3 %}
+        <tr class="{% if request.user.is_authenticated and e.player.operative_name == request.user.profile.operative_name %}highlight{% endif %}">
+          <td class="rank-cell">{{ rank }}</td>
+          <td class="name-cell">{{ e.player.operative_name }}</td>
+          <td class="score-cell">{{ e.score }}</td>
+          <td>{{ e.missions_completed }}/15</td>
+          <td>
+            <div class="int-bar"><div class="int-fill" style="width:{{ e.integrity }}%"></div></div>
+            {{ e.integrity }}%
+          </td>
+          <td>{{ e.time_taken }}s</td>
+          <td class="rank-badge-cell">
+            {% if e.score >= 5000 %}<span class="rank-sovereign">SOVEREIGN</span>
+            {% elif e.score >= 3000 %}<span class="rank-elite">ELITE</span>
+            {% elif e.score >= 1500 %}<span class="rank-spec">SPECIALIST</span>
+            {% elif e.score >= 500 %}<span class="rank-agent">AGENT</span>
+            {% else %}<span class="rank-rookie">ROOKIE</span>{% endif %}
+          </td>
+          <td>{{ e.achieved_at|date:"Y-m-d" }}</td>
+        </tr>
+        {% endwith %}
+        {% endfor %}
+        {% if not top3 and not rest %}
+        <tr><td colspan="8" style="text-align:center;color:#4a6a80;padding:40px">NO ENTRIES YET — BE THE FIRST</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if player_entry %}
+  <div class="my-rank">
+    YOUR BEST: <strong>{{ player_entry.score }} pts</strong> · 
+    Missions: <strong>{{ player_entry.missions_completed }}/15</strong> · 
+    Integrity: <strong>{{ player_entry.integrity }}%</strong>
+  </div>
+  {% endif %}
+</body>
+</html>

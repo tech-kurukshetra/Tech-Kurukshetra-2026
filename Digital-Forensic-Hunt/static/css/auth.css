@@ -1,0 +1,21 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#00ff88;--cyan:#00e5ff;--red:#ff3355;--yellow:#ffcc00;--bg:#050a0f;--border:#1a2f45;--text:#b0cce0;--mono:'Courier New',monospace}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);height:100vh;overflow:hidden}
+.auth-bg{position:relative;display:flex;align-items:center;justify-content:center;height:100vh;background:radial-gradient(ellipse at 50% 40%,#0a1a2a 0%,#050a0f 70%)}
+.scanlines{position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,136,.02) 2px,rgba(0,255,136,.02) 4px);pointer-events:none;z-index:0}
+.auth-box{position:relative;z-index:1;width:420px;background:#090f16;border:1px solid var(--border);border-radius:4px;padding:40px;box-shadow:0 0 60px rgba(0,255,136,.08)}
+.auth-logo{font-size:36px;font-weight:bold;color:var(--green);letter-spacing:6px;text-align:center;text-shadow:0 0 20px var(--green)}
+.auth-sub{font-size:10px;color:#4a6a80;letter-spacing:3px;text-align:center;margin:8px 0 20px}
+.auth-divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin-bottom:24px}
+.auth-form{display:flex;flex-direction:column;gap:16px}
+.field-group{display:flex;flex-direction:column;gap:6px}
+.field-group label{font-size:9px;letter-spacing:2px;color:#4a6a80}
+.field-group input{background:#050a0f;border:1px solid var(--border);color:var(--green);font-family:var(--mono);font-size:13px;padding:10px 12px;outline:none;transition:border-color .2s}
+.field-group input:focus{border-color:var(--cyan);box-shadow:0 0 8px rgba(0,229,255,.15)}
+.auth-btn{background:transparent;border:1px solid var(--green);color:var(--green);font-family:var(--mono);font-size:12px;letter-spacing:3px;padding:12px;cursor:pointer;transition:all .2s;margin-top:8px}
+.auth-btn:hover{background:rgba(0,255,136,.1);box-shadow:0 0 15px rgba(0,255,136,.3)}
+.auth-error{background:rgba(255,51,85,.1);border:1px solid var(--red);color:var(--red);padding:10px 12px;font-size:11px}
+.auth-link{text-align:center;margin-top:20px;font-size:11px;color:#4a6a80}
+.auth-link a{color:var(--cyan);text-decoration:none}
+.auth-link a:hover{text-decoration:underline}
+.auth-footer{text-align:center;margin-top:24px;font-size:9px;color:#2a4055;letter-spacing:2px}

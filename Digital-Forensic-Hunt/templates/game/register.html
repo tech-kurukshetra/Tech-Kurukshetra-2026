@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SYS://TRACE — OPERATIVE REGISTRATION</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}"/>
+</head>
+<body>
+  <div class="auth-bg">
+    <div class="scanlines"></div>
+    <div class="auth-box">
+      <div class="auth-logo">SYS://TRACE</div>
+      <div class="auth-sub">OPERATIVE REGISTRATION — NEXUS CLEARANCE</div>
+      <div class="auth-divider"></div>
+      <form method="post" class="auth-form">
+        {% csrf_token %}
+        {% if error %}<div class="auth-error">⚠ {{ error }}</div>{% endif %}
+        <div class="field-group">
+          <label>USERNAME</label>
+          <input type="text" name="username" autocomplete="off" required placeholder="login_handle"/>
+        </div>
+        <div class="field-group">
+          <label>OPERATIVE CALLSIGN</label>
+          <input type="text" name="operative_name" autocomplete="off" required placeholder="GHOST_07" style="text-transform:uppercase"/>
+        </div>
+        <div class="field-group">
+          <label>ACCESS CODE</label>
+          <input type="password" name="password" required placeholder="min 8 chars"/>
+        </div>
+        <div class="field-group">
+          <label>CONFIRM CODE</label>
+          <input type="password" name="confirm" required placeholder="repeat access code"/>
+        </div>
+        <button type="submit" class="auth-btn">REQUEST CLEARANCE</button>
+      </form>
+      <div class="auth-link">Already cleared? <a href="{% url 'login' %}">Initialize session</a></div>
+      <div class="auth-footer">NEXUS COMMAND · CLASSIFIED · OPERATIVE ACCESS ONLY</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SYS://TRACE — Digital Forensics Terminal</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/game.css' %}"/>
+</head>
+<body>
+
+  <!-- Boot Screen -->
+  <div id="boot-screen">
+    <div id="boot-content">
+      <div id="boot-logo">SYS://TRACE</div>
+      <div id="boot-sub">DIGITAL FORENSICS TERMINAL v2.7</div>
+      <div id="boot-lines"></div>
+      <div id="boot-bar-wrap"><div id="boot-bar"></div></div>
+      <div id="boot-ready">PRESS ANY KEY TO INITIALIZE</div>
+    </div>
+  </div>
+
+  <!-- Main Game -->
+  <div id="game" class="hidden">
+
+    <!-- Header -->
+    <header id="hdr">
+      <div id="hdr-left">
+        <span class="hdr-label">OPERATIVE</span>
+        <span id="hdr-agent">{{ profile.operative_name }}</span>
+      </div>
+      <div id="hdr-center">
+        <span id="hdr-title">SYS://TRACE</span>
+      </div>
+      <div id="hdr-right">
+        <span class="hdr-label">LEVEL</span>
+        <span id="hdr-level">--</span>
+        <span class="hdr-sep">|</span>
+        <span class="hdr-label">SCORE</span>
+        <span id="hdr-score">0</span>
+        <span class="hdr-sep">|</span>
+        <span class="hdr-label">TIME</span>
+        <span id="hdr-timer">--:--</span>
+        <span class="hdr-sep">|</span>
+        <a href="{% url 'leaderboard' %}" class="hdr-btn" target="_blank">🏆 BOARD</a>
+        <span class="hdr-sep">|</span>
+        <button id="monitor-toggle" title="Activity Monitor">📡 MONITOR</button>
+        <span class="hdr-sep">|</span>
+        <a href="{% url 'logout' %}" class="hdr-btn">LOGOUT</a>
+      </div>
+    </header>
+
+    <!-- Layout -->
+    <div id="layout">
+      <!-- LEFT: Files + Logs -->
+      <aside id="left-panel">
+        <div class="panel-title">
+          <span class="panel-icon">▸</span> FILE SYSTEM
+          <span id="fs-status" class="status-ok">MOUNTED</span>
+        </div>
+        <div id="file-tree"></div>
+        <div class="panel-title" style="margin-top:14px;">
+          <span class="panel-icon">▸</span> SYSTEM LOGS
+          <span id="log-badge" class="badge">0 NEW</span>
+        </div>
+        <div id="log-panel"></div>
+      </aside>
+
+      <!-- CENTER: Viewer + Terminal -->
+      <main id="center-panel">
+        <div id="viewer-header">
+          <span id="viewer-path">// SELECT A FILE TO INSPECT</span>
+          <div id="viewer-actions">
+            <button class="btn-tool" id="btn-hex">HEX</button>
+            <button class="btn-tool" id="btn-strings">STRINGS</button>
+            <button class="btn-tool" id="btn-meta">META</button>
+          </div>
+        </div>
+        <div id="viewer-body">
+          <div id="viewer-placeholder">
+            <div class="ph-icon">⌬</div>
+            <div class="ph-text">AWAITING FILE SELECTION</div>
+            <div class="ph-sub">Browse the file system and open files to extract clues</div>
+          </div>
+          <pre id="viewer-content" class="hidden"></pre>
+        </div>
+        <div id="terminal-bar">
+          <span id="term-prompt">{{ profile.operative_name }}@TRACE:~$</span>
+          <input id="term-input" type="text" autocomplete="off" spellcheck="false" placeholder="help | ls | cat | grep | decode ..."/>
+          <button id="term-submit">EXEC</button>
+        </div>
+        <div id="term-history"></div>
+      </main>
+
+      <!-- RIGHT: Mission + Evidence -->
+      <aside id="right-panel">
+        <div class="panel-title"><span class="panel-icon">▸</span> MISSION BRIEF</div>
+        <div id="mission-brief"></div>
+
+        <div class="panel-title" style="margin-top:14px;">
+          <span class="panel-icon">▸</span> EVIDENCE BOARD
+          <span id="clue-count" class="badge">0/0</span>
+        </div>
+        <div id="clue-board"></div>
+
+        <div class="panel-title" style="margin-top:14px;">
+          <span class="panel-icon">▸</span> SUBMIT ANSWER
+        </div>
+        <div id="answer-panel">
+          <div id="answer-hint"></div>
+          <input id="answer-input" type="text" placeholder="Enter suspect / IP / code..." autocomplete="off" spellcheck="false"/>
+          <button id="answer-submit">SUBMIT TRACE</button>
+          <div id="answer-feedback"></div>
+        </div>
+
+        <div id="hint-section">
+          <button id="hint-btn">REQUEST INTEL <span id="hint-cost">(-150 pts)</span></button>
+          <div id="hint-text"></div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Activity Monitor -->
+    <div id="monitor-panel" class="hidden">
+      <div id="monitor-header">
+        <span id="monitor-title">📡 INTEGRITY MONITOR — ACTIVE</span>
+        <div id="monitor-status-dot"></div>
+        <button id="monitor-close">✕ CLOSE</button>
+      </div>
+      <div id="monitor-body">
+        <div id="monitor-stats">
+          <div class="stat-card"><div class="stat-label">INTEGRITY</div><div class="stat-value" id="stat-integrity">100%</div></div>
+          <div class="stat-card"><div class="stat-label">VIOLATIONS</div><div class="stat-value warn" id="stat-violations">0</div></div>
+          <div class="stat-card"><div class="stat-label">FOCUS BREAKS</div><div class="stat-value" id="stat-focus">0</div></div>
+          <div class="stat-card"><div class="stat-label">DEV TOOLS</div><div class="stat-value" id="stat-devtools">CLEAR</div></div>
+          <div class="stat-card"><div class="stat-label">TAB SWITCHES</div><div class="stat-value" id="stat-tabs">0</div></div>
+          <div class="stat-card"><div class="stat-label">RIGHT CLICKS</div><div class="stat-value" id="stat-rightclicks">0</div></div>
+        </div>
+        <div id="monitor-log-title">▸ VIOLATION LOG</div>
+        <div id="monitor-log"></div>
+      </div>
+    </div>
+
+    <!-- Level Complete Modal -->
+    <div id="modal-overlay" class="hidden">
+      <div id="modal">
+        <div id="modal-icon">✔</div>
+        <div id="modal-title">TRACE COMPLETE</div>
+        <div id="modal-body"></div>
+        <button id="modal-next">NEXT MISSION</button>
+      </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div id="gameover-overlay" class="hidden">
+      <div id="gameover">
+        <div id="go-icon">✘</div>
+        <div id="go-title">CONNECTION TERMINATED</div>
+        <div id="go-body"></div>
+        <button id="go-restart">REINITIALIZE</button>
+      </div>
+    </div>
+
+    <!-- Lockout Screen -->
+    <div id="lockout-overlay" class="hidden">
+      <div id="lockout-box">
+        <div id="lockout-icon">⚠</div>
+        <div id="lockout-title">SECURITY BREACH DETECTED</div>
+        <div id="lockout-msg"></div>
+        <div id="lockout-countdown"></div>
+        <button id="lockout-resume">RESUME OPERATION</button>
+      </div>
+    </div>
+
+    <!-- Suspicious Activity Warning -->
+    <div id="warn-overlay" class="hidden">
+      <div id="warn-scanlines"></div>
+      <div id="warn-box">
+        <div id="warn-header">
+          <div id="warn-led"></div>
+          <span id="warn-header-text">INTEGRITY MONITOR — ALERT</span>
+          <div id="warn-led"></div>
+        </div>
+        <div id="warn-icon-wrap">
+          <div id="warn-icon">⚠</div>
+          <div id="warn-rings">
+            <div class="warn-ring r1"></div>
+            <div class="warn-ring r2"></div>
+            <div class="warn-ring r3"></div>
+          </div>
+        </div>
+        <div id="warn-title">SUSPICIOUS ACTIVITY DETECTED</div>
+        <div id="warn-subtitle">UNAUTHORIZED NAVIGATION ATTEMPT</div>
+        <div id="warn-divider"></div>
+        <div id="warn-details">
+          <div class="warn-row"><span class="warn-key">EVENT TYPE</span><span class="warn-val" id="warn-event-type">TAB SWITCH</span></div>
+          <div class="warn-row"><span class="warn-key">TIMESTAMP</span><span class="warn-val" id="warn-timestamp">--:--:--</span></div>
+          <div class="warn-row"><span class="warn-key">OCCURRENCE</span><span class="warn-val" id="warn-occurrence">#1</span></div>
+          <div class="warn-row"><span class="warn-key">PENALTY</span><span class="warn-val warn-penalty" id="warn-penalty">-25 PTS</span></div>
+          <div class="warn-row"><span class="warn-key">STATUS</span><span class="warn-val warn-status">SESSION FLAGGED</span></div>
+        </div>
+        <div id="warn-msg">Leaving this window during an active mission violates NEXUS operational security protocol.</div>
+        <div id="warn-progress-wrap">
+          <div id="warn-progress-label">RESUMING IN <span id="warn-seconds">5</span>s</div>
+          <div id="warn-progress-bar-bg"><div id="warn-progress-bar"></div></div>
+        </div>
+        <button id="warn-dismiss">⏎ ACKNOWLEDGE &amp; RETURN</button>
+        <div id="warn-footer">OPERATIVE {{ profile.operative_name }} · SESSION ACTIVE · ALL EVENTS RECORDED</div>
+      </div>
+    </div>
+
+    <div id="notif" class="hidden"></div>
+  </div>
+
+  <script>
+    // Django injects operative name for JS
+    window.NEXUS_CONFIG = {
+      operativeName: "{{ profile.operative_name }}",
+      totalMissions: {{ total_missions }},
+      csrfToken: "{{ csrf_token }}"
+    };
+  </script>
+  <script src="{% static 'js/game.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SYS://TRACE — NEXUS LOGIN</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}"/>
+</head>
+<body>
+  <div class="auth-bg">
+    <div class="scanlines"></div>
+    <div class="auth-box">
+      <div class="auth-logo">SYS://TRACE</div>
+      <div class="auth-sub">NEXUS DIGITAL FORENSICS TERMINAL</div>
+      <div class="auth-divider"></div>
+      <form method="post" class="auth-form">
+        {% csrf_token %}
+        {% if error %}<div class="auth-error">⚠ {{ error }}</div>{% endif %}
+        <div class="field-group">
+          <label>USERNAME</label>
+          <input type="text" name="username" autocomplete="off" spellcheck="false" required placeholder="operative_id"/>
+        </div>
+        <div class="field-group">
+          <label>ACCESS CODE</label>
+          <input type="password" name="password" required placeholder="••••••••"/>
+        </div>
+        <button type="submit" class="auth-btn">INITIALIZE SESSION</button>
+      </form>
+      <div class="auth-link">New operative? <a href="{% url 'register' %}">Request access clearance</a></div>
+      <div class="auth-footer">NEXUS COMMAND · CLASSIFIED · OPERATIVE ACCESS ONLY</div>
+    </div>
+  </div>
+</body>
+</html>

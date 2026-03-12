@@ -1,0 +1,45 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#00ff88;--cyan:#00e5ff;--red:#ff3355;--yellow:#ffcc00;--orange:#ff7700;--purple:#cc44ff;--bg:#050a0f;--bg2:#090f16;--border:#1a2f45;--text:#b0cce0;--mono:'Courier New',monospace}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;min-height:100vh}
+#lb-bg{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,#0a1a2a 0%,#050a0f 60%);z-index:-1}
+.scanlines{position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,136,.015) 2px,rgba(0,255,136,.015) 4px);pointer-events:none}
+.lb-header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.lb-back{color:var(--cyan);text-decoration:none;font-size:11px;letter-spacing:1px}
+.lb-back:hover{color:var(--green)}
+.lb-title{font-size:18px;font-weight:bold;color:var(--green);letter-spacing:4px;text-shadow:0 0 15px var(--green)}
+.lb-user{font-size:11px;color:#4a6a80}
+.lb-stats{display:flex;gap:16px;padding:20px 24px;justify-content:center}
+.stat-card{background:var(--bg2);border:1px solid var(--border);padding:16px 24px;text-align:center;min-width:120px}
+.stat-val{font-size:28px;font-weight:bold;color:var(--green)}
+.stat-lbl{font-size:9px;letter-spacing:2px;color:#4a6a80;margin-top:4px}
+.podium{display:flex;gap:16px;justify-content:center;padding:0 24px 24px;align-items:flex-end}
+.podium-card{background:var(--bg2);border:1px solid var(--border);padding:20px;text-align:center;flex:1;max-width:220px;border-radius:4px;transition:border-color .2s}
+.podium-card.rank-1{border-color:var(--yellow);box-shadow:0 0 20px rgba(255,204,0,.15);transform:translateY(-16px)}
+.podium-card.rank-2{border-color:#aaa;box-shadow:0 0 15px rgba(200,200,200,.1);transform:translateY(-8px)}
+.podium-card.rank-3{border-color:#cd7f32;box-shadow:0 0 12px rgba(205,127,50,.1)}
+.podium-card.is-me{outline:2px solid var(--cyan)}
+.podium-medal{font-size:32px;margin-bottom:8px}
+.podium-name{font-size:14px;font-weight:bold;color:var(--text);margin-bottom:4px}
+.podium-score{font-size:24px;font-weight:bold;color:var(--green)}
+.podium-meta{font-size:10px;color:#4a6a80;margin-top:4px}
+.lb-table-wrap{padding:0 24px 40px;overflow-x:auto}
+.lb-table{width:100%;border-collapse:collapse;font-size:12px}
+.lb-table thead tr{background:rgba(0,229,255,.05);border-bottom:1px solid var(--border)}
+.lb-table th{padding:10px 12px;text-align:left;font-size:9px;letter-spacing:2px;color:#4a6a80}
+.lb-table tbody tr{border-bottom:1px solid #0a1820;transition:background .15s}
+.lb-table tbody tr:hover{background:rgba(0,229,255,.03)}
+.lb-table tbody tr.highlight{background:rgba(0,255,136,.05);border-left:2px solid var(--green)}
+.lb-table td{padding:10px 12px}
+.rank-cell{color:var(--yellow);font-weight:bold;width:50px}
+.name-cell{color:var(--cyan);font-weight:bold}
+.score-cell{color:var(--green);font-weight:bold;font-size:14px}
+.int-bar{display:inline-block;width:50px;height:6px;background:#111;border-radius:3px;margin-right:6px;vertical-align:middle}
+.int-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),var(--cyan))}
+.rank-badge-cell span{font-size:9px;letter-spacing:1px;padding:2px 6px;border-radius:2px}
+.rank-sovereign{background:rgba(255,51,85,.2);color:var(--red)}
+.rank-elite{background:rgba(255,119,0,.2);color:var(--orange)}
+.rank-spec{background:rgba(255,204,0,.2);color:var(--yellow)}
+.rank-agent{background:rgba(0,229,255,.2);color:var(--cyan)}
+.rank-rookie{background:rgba(0,255,136,.2);color:var(--green)}
+.my-rank{text-align:center;padding:16px;background:rgba(0,255,136,.05);border-top:1px solid var(--border);font-size:12px;color:#4a6a80}
+.my-rank strong{color:var(--green)}
